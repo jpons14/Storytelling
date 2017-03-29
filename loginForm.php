@@ -6,14 +6,17 @@
     <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
+<?php
+session_start();
+if (isset($_SESSION['loginError']))
+    echo '<div class="error"> ' . $_SESSION['loginError'] . '</div><br />';
+unset($_SESSION['loginError']);
+session_destroy();
+unset($_COOKIE['PHPSESSID']);
+?>
 <h1>Login</h1>
 <form action="login.php" method="POST">
-    <?php
-        session_start();
-        if (isset($_SESSION['loginError']))
-            echo '<div class="error"> ' . $_SESSION['loginError'] . '</div><br />';
-        unset($_SESSION['loginError']);
-    ?>
+
     <label for="email">Email</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <input type="email" id="email" name="email" placeholder="email"/>
 

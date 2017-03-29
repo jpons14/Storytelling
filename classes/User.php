@@ -20,6 +20,8 @@ class User extends DB
             else {
                 session_start();
                 $_SESSION['logged'] = true;
+                unset($_COOKIE['PHPSESSID']);
+                session_destroy();
                 header( 'Location: stories.php' );
             }
         } elseif ($register) {
@@ -31,6 +33,8 @@ class User extends DB
                 elseif ( $registered ) {
                     session_start();
                     $_SESSION[ 'logged' ] = true;
+                    unset($_COOKIE['PHPSESSID']);
+                    session_destroy();
                     header( 'Location: stories.php' );
                 }
             } elseif ($isUserYet){
@@ -86,6 +90,16 @@ class User extends DB
         $values['email'] = $this->email;
         $values['password'] = $this->password;
         return $this->insert($values);
+    }
+
+    public static function logOut(){
+        session_start();
+        $_SESSION['logged'] = false;
+        session_destroy();
+        unset($_COOKIE['PHPSESSID']);
+        echo '<pre>$_COOKIE' . print_r( $_COOKIE, true ) . '</pre>';
+        echo 'cookie deleted';
+        header('Location: /index.php');
     }
 
 }

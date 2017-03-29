@@ -8,9 +8,12 @@
 <body>
 <?php
 session_start();
-if ( isset( $_SESSION[ 'loginError' ] ) )
-    echo '<div class="error"> ' . $_SESSION[ 'loginError' ] . '</div><br />';
-unset( $_SESSION[ 'loginError' ] );
+if (isset($_SESSION['loginError']))
+echo '<div class="error"> ' . $_SESSION['loginError'] . '</div><br />';
+unset($_SESSION['loginError']);
+session_unset();
+session_destroy();
+unset($_COOKIE['PHPSESSID']);
 ?>
 <form action="register.php" method="POST">
     <input type="text" name="name" placeholder="name">

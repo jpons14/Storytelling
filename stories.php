@@ -1,5 +1,15 @@
 <?php
+require_once 'classes/DB.php';
+require_once 'classes/User.php';
+?>
+<a href="?logout=true">LogOut</a>
+<br />
+<br />
+<br />
+<?php
 //require_once 'Story.php';
+if (isset($_GET['logout']) && $_GET['logout'] == 'true')
+    User::logout();
 $ficheros = scandir( 'stories' );
 $files = array();
 foreach ( $ficheros as $fichero ) {

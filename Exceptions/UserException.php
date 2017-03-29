@@ -6,6 +6,8 @@ class UserException extends Exception
     {
         session_start();
         $_SESSION['loginError'] = $message;
+        unset($_COOKIE['PHPSESSID']);
+        session_destroy();
         header("Location: $url");
     }
 
