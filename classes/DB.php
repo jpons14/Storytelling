@@ -70,9 +70,14 @@ class DB
             throw new DBException( "Connection is null" );
     }
 
-    public function setTable( $table )
+    protected function setTable( $table )
     {
         $this->table = $table;
+    }
+
+    protected function setFields( $fields )
+    {
+        $this->fields = $fields;
     }
 
     /**
@@ -194,12 +199,12 @@ class DB
     {
         if ( is_array( $id ) ) {
             foreach ( $id as $item ) {
-                $sql = "DELETE FROM $this->table WHERE `id` = $item";
+                $sql = "DELETE FROM $this->table WHERE `id` = '$item'";
                 $this->executeUpdate( $sql );
             }
             return;
         }
-        if ( !is_int( $id ) | $id == null )
+        if ( !is_int( $id ) || $id == null )
             throw new DBException( '$id has to be an Integer or an Array' );
 
         $sql = "DELETE FROM $this->table WHERE `id` = $id";
@@ -218,10 +223,10 @@ class DB
 
     /**
      * @param $sql
-     * @return bool
+     * @return bool|mysqli_result
      */
     private function executeUpdate( $sql )
     {
-        return $this->connection->query( $sql ) or die( 'Error on executeUpdate()<br /> ' . mysqli_error( $this->connection ) );
+        return  mysqli_query( $this->connection, $sql );
     }
 }

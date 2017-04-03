@@ -6,3 +6,11 @@ CREATE TABLE users(
   email VARCHAR(100),
   password VARCHAR(50)
 );
+
+DROP TABLE IF EXISTS stories;
+CREATE TABLE stories(
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(150),
+  subject VARCHAR(150),
+  likes INT
+)

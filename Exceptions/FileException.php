@@ -1,6 +1,6 @@
 <?php
 
-class DBException extends Exception
+class FileException extends Exception
 {
     public function __construct($message)
     {

@@ -1,26 +1,31 @@
 <?php
 require_once 'classes/DB.php';
+require_once 'classes/StoriesDB.php';
 require_once 'classes/User.php';
-?>
-<a href="?logout=true">LogOut</a>
-<br />
-<br />
-<br />
-<?php
+require_once 'Exceptions/DBException.php';
+require_once 'Exceptions/UserException.php';
+
+include_once 'repetitive/checkLogin.php';
+
+$user = new User($_SESSION['userEmail']);
 //require_once 'Story.php';
 if (isset($_GET['logout']) && $_GET['logout'] == 'true')
     User::logout();
-$ficheros = scandir( 'stories' );
-$files = array();
-foreach ( $ficheros as $fichero ) {
-    if ( !in_array( $fichero, array( '.', '..' ) ) )
-        $files[] = $fichero;
+if (isset($_GET['unregister']) && $_GET['unregister'] == 'true') {
+    $user->unregister();
 }
-
-foreach ( $files as $file ) {
-    $json = file_get_contents( 'stories/' . $file );
-    $json = json_decode( $json );
+?>
+    <a href="?logout=true<?php echo $user->getUserId(); ?>">LogOut</a><br />
+    <a href="?unregister=true&id=">unregister</a>
+    <br />
+    <br />
+    <br />
+<?php
+$stories = new StoriesDB();
+foreach ( $stories->all() as $item ) {
     print <<<HTML
-   <a href="editStory.php?story= $file"> $file </a>&nbsp;&nbsp;&nbsp;&nbsp; ==>  likes:   $json->likes<br />
+    <a href="story.php?name=$item[1]">$item[1] -- $item[2]</a> -- Likes:  <a href="#?like=$item[0]">$item[3]</a><hr /> 
+
 HTML;
+
 }

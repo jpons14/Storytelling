@@ -1,6 +1,21 @@
 {
-  "name": "story111",
-  "subject": "subect1",
-  "text": "lorem ipsum dolor siet",
-  "likes": 0
+  "story": {
+    "likes": 66,
+    "1": {
+      "userId": 1,
+      "text": "lorem ipsum dolor siet"
+    },
+    "2": {
+      "userId": 2,
+      "text": "text number 2"
+    },
+    "4": {
+      "userId": 2,
+      "text": "el mata coches"
+    },
+    "5": {
+      "userId": 2,
+      "text": "el mata coches"
+    }
+  }
 }

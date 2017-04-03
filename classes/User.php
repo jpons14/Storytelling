@@ -6,46 +6,46 @@ class User extends DB
     private $email;
     private $password;
 
-    public function __construct( $name, $email, $password, $register = false )
+    private $userId;
+
+    public function __construct( $email, $name = '', $password = '', $register = false )
     {
         parent::__construct();
-        $this->name = $name;
         $this->email = $email;
-        $this->password = $password;
-        $this->fields = ['name', 'email', 'password'];
-        $hasLogged = $this->login($email, $password);
-        if (!$register) {
-            if ( !$hasLogged )
-                new UserException( 'Email or password are not correct', '/loginForm.php' );
-            else {
-                session_start();
-                $_SESSION['logged'] = true;
-                unset($_COOKIE['PHPSESSID']);
-                session_destroy();
-                header( 'Location: stories.php' );
-            }
-        } elseif ($register) {
-            $isUserYet = $this->isUser();
-            if ( !$isUserYet ) {
-                $registered = $this->register();
-                if ( !$registered )
-                    new UserException( 'The register couldn\'t be done', '/registerForm.php' );
-                elseif ( $registered ) {
-                    session_start();
-                    $_SESSION[ 'logged' ] = true;
-                    unset($_COOKIE['PHPSESSID']);
-                    session_destroy();
-                    header( 'Location: stories.php' );
+        $justEmail = false;
+        try {
+            $this->fields = [ 'name', 'email', 'password' ];
+            if ( $name == '' && $password == '' ) {
+                $justEmail = true;
+            } else {
+                $this->name = $name;
+                $this->password = $password;
+                if ( $register ) {
+                    $this->_doRegister();
                 }
-            } elseif ($isUserYet){
-                new UserException( 'This user is already registered', '/registerForm.php' );
+                $this->_doLogin();
+                session_start();
             }
+
+        } catch ( DBException $e ) {
+            $e->showException();
         }
+        $_SESSION[ 'logged' ] = 'true';
+        $_SESSION[ 'userId' ] = $this->userId;
+        $_SESSION[ 'userEmail' ] = $this->email;
+
+        if ( !$justEmail )
+            header( 'Location: /stories.php' );
     }
 
     public function __toString()
     {
         return $this->name . ' ' . $this->email . ' ' . $this->password;
+    }
+
+    public function getUserId()
+    {
+        return $this->userId;
     }
 
     public function getName()
@@ -63,43 +63,64 @@ class User extends DB
         return $this->password;
     }
 
-    private function login( $email, $password )
+    private function _doLogin()
     {
-        $this->setTable('users');
-        $emailValidation = $this->where('email', $email);
-        $passwordValidation = $this->where('password', $password);
-        echo '<pre>count($emailValidation)  --> ' . print_r( count($emailValidation), true ) . '</pre>';
-        echo '<pre>count($passwordValidation) --> ' . print_r( count($passwordValidation), true ) . '</pre>';
-        if  (count($emailValidation) && count($passwordValidation))
-            return 1;
+        $email = $this->email;
+        $password = $this->password;
+        $this->setTable( 'users' );
+        $emailValidation = $this->where( 'email', $email );
+        if ( count( $emailValidation ) === 1 ) {
+            if ( password_verify( $password, $emailValidation[ 0 ][ 3 ] ) ) {
+                $this->userId = $emailValidation[ 0 ][ 0 ];
+                return true;
+            } else //wrong password
+                throw new DBException( 'Wrong password' );
+        } elseif ( count( $emailValidation ) === 0 ) //wrong username
+            throw new DBException( 'Wrong username' );
+        else //Database exception
+            throw new DBException( 'More than one item with the same ID in the DB' );
+    }
+
+    private function isUser()
+    {
+        $this->setTable( 'users' );
+        $emailValidation = $this->where( 'email', $this->email );
+        if ( count( $emailValidation ) === 1 )
+            return true;
         else
-            return 0;
+            return false;
     }
 
-    private function isUser( )
+    private function _doRegister()
     {
-        $this->setTable('users');
-        $emailValidation = $this->where('email', $this->email);
-        echo '<pre>count($emailValidation)' . print_r( count($emailValidation), true ) . '</pre>';
-        return count($emailValidation);
+        if ( $this->isUser() )
+            throw new DBException( 'This user already exists' );
+        else {
+            $values[ 'name' ] = $this->name;
+            $values[ 'email' ] = $this->email;
+            $values[ 'password' ] = $this->password;
+            return $this->insert( $values );
+        }
     }
 
-    private function register(  )
+    public static function logOut()
     {
-        $values['name'] = $this->name;
-        $values['email'] = $this->email;
-        $values['password'] = $this->password;
-        return $this->insert($values);
-    }
-
-    public static function logOut(){
         session_start();
-        $_SESSION['logged'] = false;
+        session_unset();
         session_destroy();
-        unset($_COOKIE['PHPSESSID']);
+        unset( $_COOKIE[ 'PHPSESSID' ] );
         echo '<pre>$_COOKIE' . print_r( $_COOKIE, true ) . '</pre>';
         echo 'cookie deleted';
-        header('Location: /index.php');
+        header( 'Location: /index.php' );
+    }
+
+    public
+    function unregister()
+    {
+        $this->setTable( 'users' );
+        echo '<pre>$this->userId' . print_r( $this->userId, true ) . '</pre>';
+        $this->destroy( (int)$this->userId );
+        header( 'Location: /index.php' );
     }
 
 }
