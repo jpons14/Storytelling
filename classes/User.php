@@ -81,6 +81,17 @@ class User extends DB
             throw new DBException( 'More than one item with the same ID in the DB' );
     }
 
+    public function getUserDataById($id){
+        $this->setTable('users');
+        return $this->find($id);
+    }
+
+    public function getUserDataByEmail( $email )
+    {
+        $this->setTable('users');
+        return $this->where('email', $email);
+    }
+
     private function isUser()
     {
         $this->setTable( 'users' );

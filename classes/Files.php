@@ -25,8 +25,12 @@ class Files
         $this->rootPath = $rootPath;
         $this->filename = $filename . '.json';
         $this->setRoot();
-        $this->file = fopen($this->root, 'rw', LOCK_EX);
-        flock($this->file, LOCK_SH);
+        $this->file = @fopen($this->root, 'rw');
+        if (!$this->file) {
+            file_put_contents( $this->root, '' );
+            $this->file = fopen($this->root, 'rw');
+        }
+//        flock($this->file, LOCK_SH);
 //        $this->read();
     }
 

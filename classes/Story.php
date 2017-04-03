@@ -2,6 +2,9 @@
 
 class Story extends Files
 {
+
+    public $contributions;
+
     public function __construct( $filename, $rootPath = 'stories/' )
     {
         parent::__construct( $filename, $rootPath );
@@ -38,9 +41,23 @@ class Story extends Files
     protected function save(  )
     {
         $json = json_encode( $this->contents );
-        return file_put_contents( $this->getRoot(), $json, LOCK_EX );
+
+
+        // it should be like this, but I don't know why, is not working
+//        ftruncate($this->file, 0);
+//        fwrite($this->file, $json);
+
+        return file_put_contents($this->getRoot(), $json);
     }
 
+
+    public function getContributions(  )
+    {
+        foreach ( $this->contents['story'] as $content ) {
+            $this->contributions[] = $content;
+        }
+        return $this->contributions;
+    }
 
     /** Has to check if the file exists (in another function)
      * If that function returns false, an array will be filled with

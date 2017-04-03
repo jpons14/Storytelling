@@ -1,0 +1,20 @@
+{
+  "story": {
+    "1": {
+      "userId": 1,
+      "text": "lorem ipsum dolor siet story 2"
+    },
+    "2": {
+      "userId": 2,
+      "text": "text number 22222"
+    },
+    "4": {
+      "userId": 2,
+      "text": "el mata coches2222"
+    },
+    "5": {
+      "userId": 2,
+      "text": "el mata coches22"
+    }
+  }
+}
