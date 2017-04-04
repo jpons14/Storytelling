@@ -9,15 +9,16 @@ include_once 'repetitive/checkLogin.php';
 include_once 'repetitive/header.php';
 
 if ( $_SERVER[ 'REQUEST_METHOD' ] == 'POST' ) {
-    $story = new Story($_POST['name']);
+    $story = new Story( $_POST[ 'name' ],
+        [ 'userId' => $user->getUserDataByEmail($user->getEmail())[0][0], 'name' => $_POST['name'], 'text' => $_POST[ 'text' ], 'subject' => $_POST[ 'subject' ] ] );
 }
 
 ?>
 <form action="" method="post">
     <input type="text" name="name" placeholder="Name"/><br/>
     <input type="text" name="subject" placeholder="Subject"/><br/>
-    <textarea name="text" id="" cols="30" rows="10" placeholder="Text"></textarea><br />
-    <input type="submit" value="New Story" />
+    <textarea name="text" id="" cols="30" rows="10" placeholder="Text"></textarea><br/>
+    <input type="submit" value="New Story"/>
 </form>
 
 

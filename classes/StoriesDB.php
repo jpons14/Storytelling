@@ -26,8 +26,16 @@ class StoriesDB extends DB
         return $return;
     }
 
+    public function newStory( $name, $subject )
+    {
+        $this->setTable('stories');
+        return $this->insert(['name' => $name, 'subject' => $subject, 'likes' => 0]);
+    }
+
     public function likeIt( $storyId )
     {
-        $story = $this->find($storyId);
+        $storyLikes = (int)($this->find((int)$storyId)[0][3]);
+        $storyLikes++;
+        $this->update(['likes' => (int)$storyLikes], (int)$storyLikes);
     }
 }

@@ -15,6 +15,8 @@ class Files
      */
     protected $file;
 
+
+
     /**
      * Files constructor.
      * @param $filename
@@ -25,6 +27,8 @@ class Files
         $this->rootPath = $rootPath;
         $this->filename = $filename . '.json';
         $this->setRoot();
+        // If the file don't exists, will execute file_put_contents to create the file
+        // Then will set the file handler in $this->file
         $this->file = @fopen($this->root, 'rw');
         if (!$this->file) {
             file_put_contents( $this->root, '' );
