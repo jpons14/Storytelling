@@ -7,7 +7,12 @@ require_once 'Exceptions/UserException.php';
 
 include_once 'repetitive/checkLogin.php';
 include_once 'repetitive/header.php';
+?>
 
+<a href="editUser.php">Edit profile</a>
+<br />
+<br />
+<?php
 $stories = new StoriesDB();
 if (isset($_GET['like'])){
     $stories->likeIt($_GET['like']);

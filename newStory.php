@@ -7,6 +7,13 @@ require_once 'classes/Story.php';
 
 include_once 'repetitive/checkLogin.php';
 include_once 'repetitive/header.php';
+?>
+<a href="story.php?back=true">Go Back!</a>
+<?php
+
+if (isset($_GET['back']) && $_GET['back'] == 'true')
+    header('Location: stories.php');
+
 
 if ( $_SERVER[ 'REQUEST_METHOD' ] == 'POST' ) {
     $story = new Story( $_POST[ 'name' ],

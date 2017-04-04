@@ -86,10 +86,13 @@ class User extends DB
         return $this->find($id);
     }
 
-    public function getUserDataByEmail( $email )
+    public function getUserDataByEmail( $email = '' )
     {
         $this->setTable('users');
-        return $this->where('email', $email);
+        if ($email == '')
+            return $this->where('email', $this->email);
+        else
+            return $this->where('email', $email);
     }
 
     private function isUser()
