@@ -36,6 +36,6 @@ class StoriesDB extends DB
     {
         $storyLikes = (int)($this->find((int)$storyId)[0][3]);
         $storyLikes++;
-        $this->update(['likes' => (int)$storyLikes], (int)$storyLikes);
+        $this->update(['likes' => (int)$storyLikes], (int)$storyId);
     }
 }

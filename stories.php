@@ -11,6 +11,7 @@ include_once 'repetitive/header.php';
 $stories = new StoriesDB();
 if (isset($_GET['like'])){
     $stories->likeIt($_GET['like']);
+    header('Location: /stories.php');
 }
 foreach ( $stories->all() as $item ) {
     print <<<HTML

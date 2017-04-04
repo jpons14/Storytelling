@@ -164,7 +164,7 @@ class DB
     /**
      * @param $values
      * @param $id
-     * @return bool|void
+     * @return array
      * @throws DBException
      */
     public function update( $values, $id )
